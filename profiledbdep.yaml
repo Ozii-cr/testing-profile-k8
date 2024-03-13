@@ -17,6 +17,9 @@ spec:
       containers:
       - name: profiledb
         image: vprofile/vprofiledb:V1
+        volumeMounts:
+          - mountPath: /var/lib/mysql
+            name: pro-db-data
         resources:
           limits:
             memory: "128Mi"
@@ -39,10 +42,11 @@ spec:
           awsElasticBlockStore:
             volumeID: vol-0c753d2c8d93aee23
             fsType: ext4
+#Run an initial container to delete the folder created by formating 
       initContainers:
         - name : busybox
           image: busybox:latest
-          args: [ "rm", "-rf", "/var/lib/sql"]
+          args: [ "rm", "-rf", "/var/lib/sql/lost+found"]
           volumeMounts: 
             - name: pro-db-data
               mountPath: /var/lib/mysql
